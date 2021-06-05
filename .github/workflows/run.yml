@@ -12,29 +12,32 @@
 #
 ######  end 说明  ######
 
-name: Run it on action
+name: Renew freenom domain name
 
 on:
-  push:
-    branches:
-      - do
   workflow_dispatch:
+  # schedule:
+  #   - cron: '10 16 * * *'  # scheduled at 00:10 (UTC+8) everyday
   watch:
     types: [started]
 
+env:
+  TZ: 'Asia/Shanghai'
+
 jobs:
-  run-it:
-    runs-on: ubuntu-18.04
+  renew:
+    name: Renew freenom domain name
     if: github.event.repository.owner.id == github.event.sender.id
-    name: Run it on action
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Checkout master
         uses: actions/checkout@v2
         with:
           repository: luolongfei/freenom
+          token: ${{ secrets.ACCESS_TOKEN || github.token }}
 
-      - name: Setup PHP
+      - name: Set up PHP 7.2
         uses: shivammathur/setup-php@v2
         with:
           php-version: '7.2'
